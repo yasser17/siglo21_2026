@@ -9,7 +9,7 @@ Thumbs.db
 
 # Dependencies & build
 node_modules/
-vendor/
+/vendor/
 dist/
 *.log
 npm-debug.log*
