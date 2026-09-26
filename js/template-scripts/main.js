@@ -222,6 +222,86 @@ $(document).ready(function(){
   });
 
   /*----------------------------------------------
+          P O P U P   D E   P R O G R A M A
+  ------------------------------------------------*/
+  // La tarjeta del carrusel es un <div role="button">: Bootstrap solo la abre
+  // con click, así que Enter y Espacio se agregan a mano para teclado.
+  $( '#anchor01' ).on( 'keydown', '.cover[data-toggle="modal"]', function( e ) {
+    if ( ( e.key === 'Enter' || e.key === ' ' ) && !e.repeat ) {
+      e.preventDefault();
+      $( this ).trigger( 'click' );
+    }
+  });
+
+  // Badge "EN VIVO": se calcula en el navegador al abrir el popup (no en PHP)
+  // para que una página cacheada no quede mostrando un estado viejo. Siempre
+  // en hora de Montevideo, sin importar la zona horaria del visitante.
+  var semana = [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ];
+
+  function aMinutos( hhmm ) {
+    var partes = /^(\d{1,2}):(\d{2})/.exec( hhmm || '' );
+    return partes ? parseInt( partes[1], 10 ) * 60 + parseInt( partes[2], 10 ) : null;
+  }
+
+  function ahoraEnMontevideo() {
+    try {
+      var partes = new Intl.DateTimeFormat( 'en-US', {
+        timeZone: 'America/Montevideo',
+        weekday: 'long',
+        hour: '2-digit',
+        minute: '2-digit',
+        hourCycle: 'h23'
+      }).formatToParts( new Date() );
+      var valores = {};
+      partes.forEach( function( p ) { valores[ p.type ] = p.value; } );
+      return {
+        dia: semana.indexOf( valores.weekday ),
+        minutos: ( parseInt( valores.hour, 10 ) % 24 ) * 60 + parseInt( valores.minute, 10 )
+      };
+    } catch ( err ) {
+      return null;
+    }
+  }
+
+  function estaAlAire( dias, inicio, fin, ahora ) {
+    if ( !ahora || ahora.dia < 0 || inicio === null || fin === null || inicio === fin ) {
+      return false;
+    }
+    var hoy = semana[ ahora.dia ];
+    var ayer = semana[ ( ahora.dia + 6 ) % 7 ];
+    if ( fin > inicio ) {
+      return dias.indexOf( hoy ) !== -1 && ahora.minutos >= inicio && ahora.minutos < fin;
+    }
+    // Programa que cruza la medianoche (ej. 22:00 a 01:00).
+    return ( dias.indexOf( hoy ) !== -1 && ahora.minutos >= inicio ) ||
+           ( dias.indexOf( ayer ) !== -1 && ahora.minutos < fin );
+  }
+
+  $( '.program-modal' ).on( 'show.bs.modal', function() {
+    var $badge = $( this ).find( '.program-modal__live' );
+    if ( !$badge.length ) {
+      return;
+    }
+    var alAire = estaAlAire(
+      String( $badge.data( 'dias' ) || '' ).split( ',' ),
+      aMinutos( String( $badge.data( 'inicio' ) ) ),
+      aMinutos( String( $badge.data( 'fin' ) ) ),
+      ahoraEnMontevideo()
+    );
+    $badge.prop( 'hidden', !alAire );
+  });
+
+  // El streaming embebido llega con data-src (ver siglo21_program_embed): se
+  // carga al abrir el popup y se descarga al cerrarlo para que no siga sonando.
+  $( '.program-modal' ).on( 'show.bs.modal', function() {
+    $( this ).find( '.program-modal__embed iframe[data-src]' ).each( function() {
+      this.src = this.getAttribute( 'data-src' );
+    });
+  }).on( 'hidden.bs.modal', function() {
+    $( this ).find( '.program-modal__embed iframe[data-src]' ).removeAttr( 'src' );
+  });
+
+  /*----------------------------------------------
                 L I G H T B O X
   ------------------------------------------------*/
   // Swipebox desactivado - causaba conflictos con otros elementos

@@ -11,6 +11,7 @@
 
 require_once get_template_directory() . '/inc/custom_post_types.php';
 require_once get_template_directory() . '/inc/options.php';
+require_once get_template_directory() . '/inc/program-helpers.php';
 
 /*------------------------------------*\
 	Theme Support

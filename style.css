@@ -687,3 +687,321 @@ footer.footer .footer-credit a:focus-visible {
 		height: 500px;
 	}
 }
+/* ----------------------------------------------------------------------
+   Popups (modales de Bootstrap): por encima del header y del reproductor.
+   El header fijo usa z-index 99999 (css/template-styles/main.css) y el
+   reproductor 999; los valores por defecto de Bootstrap (1040 / 1050)
+   dejaban el popup por debajo del menú. Aplica a todos los modales,
+   incluido el de sorteos.
+   ---------------------------------------------------------------------- */
+.modal-backdrop {
+	z-index: 100001;
+}
+
+.modal {
+	z-index: 100002;
+}
+
+.modal-backdrop.in {
+	opacity: 0.8;
+}
+
+/* ----------------------------------------------------------------------
+   Popup de detalle de programa (front-page.php, #anchor01).
+   ---------------------------------------------------------------------- */
+.program-modal .modal-dialog {
+	width: auto;
+	max-width: 860px;
+	margin: 40px auto;
+	padding: 0 16px;
+}
+
+.program-modal .modal-content {
+	position: relative;
+	background: #151518;
+	color: #ffffff;
+	border: 0;
+	border-radius: 8px;
+	box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+	padding: 32px;
+	font-family: 'Roboto', sans-serif;
+	text-align: left;
+}
+
+.program-modal .close {
+	position: absolute;
+	top: 8px;
+	right: 8px;
+	width: 44px;
+	height: 44px;
+	margin: 0;
+	color: #ffffff;
+	opacity: 0.8;
+	font-size: 32px;
+	line-height: 44px;
+	text-shadow: none;
+	z-index: 1;
+}
+
+.program-modal .close:hover,
+.program-modal .close:focus {
+	color: #ffffff;
+	opacity: 1;
+}
+
+.program-modal__grid {
+	display: flex;
+	gap: 32px;
+	align-items: flex-start;
+}
+
+.program-modal__cover {
+	flex: 0 0 280px;
+	width: 280px;
+	height: 280px;
+	background-color: #111111;
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.program-modal__cover img {
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+}
+
+.program-modal__info {
+	flex: 1 1 auto;
+	min-width: 0;
+}
+
+.program-modal .program-modal__pretitle {
+	margin: 0 0 6px;
+	color: var(--color-marca);
+	font-size: 12px;
+	font-weight: 700;
+	letter-spacing: 2px;
+	text-transform: uppercase;
+}
+
+.program-modal .program-modal__title {
+	margin: 0 44px 14px 0;
+	color: #ffffff;
+	font-size: 28px;
+	font-weight: 700;
+	line-height: 1.2;
+	text-transform: none;
+	letter-spacing: 0;
+}
+
+.program-modal__chips {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.program-modal__chip,
+.program-modal__live {
+	display: inline-flex;
+	align-items: center;
+	border-radius: 999px;
+	padding: 6px 14px;
+	font-size: 13px;
+	line-height: 1.4;
+}
+
+.program-modal__chip {
+	background: rgba(255, 255, 255, 0.08);
+	color: #ffffff;
+}
+
+.program-modal__live {
+	background: #e53935;
+	color: #ffffff;
+	font-size: 12px;
+	font-weight: 700;
+	letter-spacing: 1px;
+}
+
+.program-modal__live[hidden] {
+	display: none;
+}
+
+.program-modal__description {
+	margin-top: 20px;
+}
+
+.program-modal .program-modal__description p {
+	margin: 0 0 12px;
+	color: rgba(255, 255, 255, 0.65);
+	font-size: 15px;
+	line-height: 1.7;
+}
+
+.program-modal .program-modal__description li {
+	color: rgba(255, 255, 255, 0.65);
+	font-size: 15px;
+	line-height: 1.7;
+}
+
+.program-modal .program-modal__description a {
+	color: #ffffff;
+	text-decoration: underline;
+}
+
+.program-modal__embed {
+	margin-top: 20px;
+}
+
+.program-modal__embed--video {
+	position: relative;
+	padding-top: 56.25%;
+}
+
+.program-modal__embed--video iframe {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	border: 0;
+}
+
+.program-modal__block {
+	margin-top: 24px;
+	padding-top: 20px;
+	border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.program-modal .program-modal__label {
+	margin: 0 0 12px;
+	color: rgba(255, 255, 255, 0.65);
+	font-size: 12px;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+}
+
+.program-modal__hosts {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 16px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.program-modal__host {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	color: #ffffff;
+	font-size: 15px;
+}
+
+.program-modal__avatar {
+	width: 56px;
+	height: 56px;
+	border-radius: 50%;
+	object-fit: cover;
+	flex: 0 0 56px;
+}
+
+.program-modal__avatar--initial {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	background: rgba(255, 255, 255, 0.08);
+	font-weight: 700;
+	font-size: 20px;
+}
+
+.program-modal__contact {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 12px;
+}
+
+.program-modal__whatsapp {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	height: 44px;
+	padding: 0 20px;
+	border-radius: 999px;
+	background: var(--color-marca);
+	color: #ffffff;
+	font-size: 14px;
+	font-weight: 700;
+}
+
+.program-modal__whatsapp .fa {
+	font-size: 20px;
+}
+
+.program-modal__social {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 44px;
+	height: 44px;
+	border: 1px solid rgba(255, 255, 255, 0.12);
+	border-radius: 50%;
+	color: #ffffff;
+	font-size: 18px;
+}
+
+.program-modal__whatsapp:hover,
+.program-modal__whatsapp:focus,
+.program-modal__social:hover,
+.program-modal__social:focus {
+	color: #ffffff;
+	text-decoration: none;
+	filter: brightness(1.15);
+}
+
+.program-modal__social:hover {
+	border-color: rgba(255, 255, 255, 0.4);
+}
+
+.program-modal .close:focus-visible,
+.program-modal__whatsapp:focus-visible,
+.program-modal__social:focus-visible,
+#anchor01 .cover[data-toggle="modal"]:focus-visible {
+	outline: none;
+	box-shadow: 0 0 0 3px var(--color-marca);
+}
+
+@media (max-width: 767px) {
+	.program-modal .modal-dialog {
+		margin: 12px auto;
+		padding: 0 12px;
+	}
+
+	.program-modal .modal-content {
+		padding: 20px;
+	}
+
+	.program-modal__grid {
+		flex-direction: column;
+		gap: 20px;
+	}
+
+	.program-modal__cover {
+		flex-basis: auto;
+		width: 180px;
+		height: 180px;
+		margin: 0 auto;
+	}
+
+	.program-modal .program-modal__title {
+		font-size: 22px;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.modal.fade .modal-dialog,
+	.modal-backdrop.fade {
+		transition: none;
+	}
+}

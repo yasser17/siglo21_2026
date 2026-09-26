@@ -63,7 +63,7 @@
 
                     <li class="gallery-cell col-xs-12 col-sm-6 col-md-4">
                         <div class="info-album">
-                            <div class="cover" data-toggle="modal" data-target="#programa-<?php echo esc_attr( $programa_slug ); ?>">
+                            <div class="cover" data-toggle="modal" data-target="#programa-<?php echo esc_attr( $programa_slug ); ?>" role="button" tabindex="0" aria-label="<?php echo esc_attr( 'Ver programa ' . get_the_title() ); ?>">
                                 <?php if ( has_post_thumbnail() ) : ?>
                                     <?php the_post_thumbnail( 'listados-thumbnail' ); ?>
                                 <?php else : ?>
@@ -91,35 +91,96 @@
                     $programa_slug = get_post_field( 'post_name' );
                     $hora_inicio   = get_field( 'hora_inicio' );
                     $hora_fin      = get_field( 'hora_fin' );
-                    $conductores   = get_field( 'conduce' );
+                    // "conduce" puede venir como posts o como IDs según la configuración de ACF.
+                    $conductores   = array_filter( array_map( 'get_post', (array) get_field( 'conduce' ) ) );
+                    $dias          = siglo21_normalize_program_days( get_field( 'dias' ) );
+                    $dias_texto    = siglo21_format_program_days( $dias );
+                    $whatsapp_url  = siglo21_whatsapp_url( get_field( 'celular_programa' ) );
+                    $facebook_url  = get_field( 'facebook_programa' );
+                    $instagram_url = get_field( 'instagram_programa' );
+                    $embed         = siglo21_program_embed( get_field( 'streaming_embed_code' ) );
+                    $titulo_id     = 'programa-' . $programa_slug . '-titulo';
+                    $contenido     = apply_filters( 'the_content', get_the_content() );
                 ?>
 
                 <!-- Modal: <?php the_title(); ?> -->
-                <div class="modal fade" id="programa-<?php echo esc_attr( $programa_slug ); ?>" tabindex="-1" role="dialog" aria-hidden="true">
-                    <div class="modal-dialog">
+                <div class="modal fade program-modal" id="programa-<?php echo esc_attr( $programa_slug ); ?>" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="<?php echo esc_attr( $titulo_id ); ?>" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <button type="button" class="close" data-dismiss="modal">
                                 <span aria-hidden="true">&times;</span><span class="sr-only">Cerrar</span>
                             </button>
-                            <div class="modal-body">
-                                <div class="row">
+                            <div class="program-modal__grid">
+                                <div class="program-modal__cover">
                                     <?php if ( has_post_thumbnail() ) : ?>
-                                    <div class="col-sm-5">
-                                        <?php the_post_thumbnail( 'medium' ); ?>
-                                    </div>
-                                    <div class="col-sm-7">
+                                        <?php the_post_thumbnail( 'medium', array( 'alt' => '' ) ); ?>
                                     <?php else : ?>
-                                    <div class="col-sm-12">
+                                        <img src="<?php echo esc_url( get_template_directory_uri() ); ?>/img/template-images/demo/discography/disco-1.jpg" alt="">
                                     <?php endif; ?>
-                                        <h3 class="title"><?php the_title(); ?></h3>
+                                </div>
+                                <div class="program-modal__info">
+                                    <p class="program-modal__pretitle">Programa</p>
+                                    <h3 class="program-modal__title" id="<?php echo esc_attr( $titulo_id ); ?>"><?php the_title(); ?></h3>
+
+                                    <?php if ( $dias_texto || ( $hora_inicio && $hora_fin ) ) : ?>
+                                    <div class="program-modal__chips">
+                                        <?php if ( $dias_texto ) : ?>
+                                            <span class="program-modal__chip"><?php echo esc_html( $dias_texto ); ?></span>
+                                        <?php endif; ?>
                                         <?php if ( $hora_inicio && $hora_fin ) : ?>
-                                            <p class="subtitle-text"><?php echo esc_html( $hora_inicio . ' a ' . $hora_fin . ' hs' ); ?></p>
+                                            <span class="program-modal__chip"><?php echo esc_html( $hora_inicio . ' – ' . $hora_fin . ' hs' ); ?></span>
                                         <?php endif; ?>
-                                        <?php if ( ! empty( $conductores ) ) : ?>
-                                            <p><strong>Conduce:</strong> <?php echo esc_html( implode( ', ', wp_list_pluck( $conductores, 'post_title' ) ) ); ?></p>
+                                        <?php if ( ! empty( $dias ) && $hora_inicio && $hora_fin ) : ?>
+                                            <span class="program-modal__live" hidden
+                                                data-dias="<?php echo esc_attr( implode( ',', (array) $dias ) ); ?>"
+                                                data-inicio="<?php echo esc_attr( $hora_inicio ); ?>"
+                                                data-fin="<?php echo esc_attr( $hora_fin ); ?>"><span aria-hidden="true">●</span> EN VIVO</span>
                                         <?php endif; ?>
-                                        <div class="description"><?php the_content(); ?></div>
                                     </div>
+                                    <?php endif; ?>
+
+                                    <?php if ( '' !== trim( wp_strip_all_tags( str_replace( '&nbsp;', ' ', $contenido ) ) ) ) : ?>
+                                        <div class="program-modal__description"><?php echo $contenido; // phpcs:ignore WordPress.Security.EscapeOutput -- salida de the_content, igual que the_content(). ?></div>
+                                    <?php endif; ?>
+
+                                    <?php if ( $embed ) : ?>
+                                        <div class="program-modal__embed<?php echo false !== stripos( $embed, '<iframe' ) ? ' program-modal__embed--video' : ''; ?>"><?php echo $embed; // phpcs:ignore WordPress.Security.EscapeOutput -- sanitizado con wp_kses en siglo21_program_embed(). ?></div>
+                                    <?php endif; ?>
+
+                                    <?php if ( ! empty( $conductores ) ) : ?>
+                                    <div class="program-modal__block">
+                                        <p class="program-modal__label"><?php echo count( $conductores ) > 1 ? 'Conducen' : 'Conduce'; ?></p>
+                                        <ul class="program-modal__hosts">
+                                            <?php foreach ( $conductores as $conductor ) : ?>
+                                            <li class="program-modal__host">
+                                                <?php if ( has_post_thumbnail( $conductor ) ) : ?>
+                                                    <?php echo get_the_post_thumbnail( $conductor, 'thumbnail', array( 'class' => 'program-modal__avatar', 'alt' => $conductor->post_title ) ); ?>
+                                                <?php else : ?>
+                                                    <span class="program-modal__avatar program-modal__avatar--initial" aria-hidden="true"><?php echo esc_html( mb_substr( $conductor->post_title, 0, 1 ) ); ?></span>
+                                                <?php endif; ?>
+                                                <span><?php echo esc_html( $conductor->post_title ); ?></span>
+                                            </li>
+                                            <?php endforeach; ?>
+                                        </ul>
+                                    </div>
+                                    <?php endif; ?>
+
+                                    <?php if ( $whatsapp_url || $facebook_url || $instagram_url ) : ?>
+                                    <div class="program-modal__block">
+                                        <p class="program-modal__label">Contacto</p>
+                                        <div class="program-modal__contact">
+                                            <?php if ( $whatsapp_url ) : ?>
+                                                <a class="program-modal__whatsapp" href="<?php echo esc_url( $whatsapp_url ); ?>" target="_blank" rel="noopener"><i class="fa fa-whatsapp" aria-hidden="true"></i> Escribinos por WhatsApp</a>
+                                            <?php endif; ?>
+                                            <?php if ( $facebook_url ) : ?>
+                                                <a class="program-modal__social" href="<?php echo esc_url( $facebook_url ); ?>" target="_blank" rel="noopener" aria-label="<?php echo esc_attr( 'Facebook de ' . get_the_title() ); ?>"><i class="fa fa-facebook" aria-hidden="true"></i></a>
+                                            <?php endif; ?>
+                                            <?php if ( $instagram_url ) : ?>
+                                                <a class="program-modal__social" href="<?php echo esc_url( $instagram_url ); ?>" target="_blank" rel="noopener" aria-label="<?php echo esc_attr( 'Instagram de ' . get_the_title() ); ?>"><i class="fa fa-instagram" aria-hidden="true"></i></a>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </div>
