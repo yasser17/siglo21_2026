@@ -1,0 +1,689 @@
+/*
+Theme Name: Siglo 21 2026
+Description: Theme desarrollado para Radio Siglo 21 - 2026.
+Version: 2.0.0
+Author: Artisan.uy (@artisanuy)
+Author URI: https://artisan.uy
+Tags: Radio, Radio online, Noticias, Salto, Uruguay 
+
+License: MIT
+License URI: http://opensource.org/licenses/mit-license.php
+*/
+
+/* 
+ * All styles are loaded from css/template-styles/ via functions.php
+ * This file contains only theme metadata.
+ */
+
+/* WordPress Core Styles */
+.alignnone {
+margin: 5px 20px 20px 0;
+}
+
+.aligncenter, div.aligncenter {
+display: block;
+margin: 5px auto 5px auto;
+}
+
+.alignright {
+float: right;
+margin: 5px 0 20px 20px;
+}
+
+.alignleft {
+float: left;
+margin: 5px 20px 20px 0;
+}
+
+a img.alignright {
+float: right;
+margin: 5px 0 20px 20px;
+}
+
+a img.alignnone {
+margin: 5px 20px 20px 0;
+}
+
+a img.alignleft {
+float: left;
+margin: 5px 20px 20px 0;
+}
+
+a img.aligncenter {
+display: block;
+margin-left: auto;
+margin-right: auto;
+}
+
+.wp-caption {
+background: #FFF;
+border: 1px solid #F0F0F0;
+max-width: 96%;
+padding: 5px 3px 10px;
+text-align: center;
+}
+
+.wp-caption.alignnone {
+margin: 5px 20px 20px 0;
+}
+
+.wp-caption.alignleft {
+margin: 5px 20px 20px 0;
+}
+
+.wp-caption.alignright {
+margin: 5px 0 20px 20px;
+}
+
+.wp-caption img {
+border: 0 none;
+height: auto;
+margin: 0;
+max-width: 98.5%;
+padding: 0;
+width: auto;
+}
+
+.wp-caption .wp-caption-text, .gallery-caption {
+font-size: 11px;
+line-height: 17px;
+margin: 0;
+padding: 0 4px 5px;
+}
+
+/* Twitch Player Styles */
+#twitch-embed {
+	display: block !important;
+	width: 100% !important;
+	min-height: 480px;
+	margin: 0 auto;
+	background: #000;
+	margin-top: 2rem;
+}
+
+@media (min-width: 992px) {
+	.navbar {
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-end;
+	}
+}
+
+.navbar .navbar-brand {
+	margin: 0 22px;
+}
+
+.navbar .navbar-brand img {
+	margin-top: 10px;
+	max-width: 200px;
+}
+
+/* Mobile: el logo y el botón de menú (☰) no quedaban alineados entre sí
+   -el logo colgaba más abajo que el botón, sin el mismo espacio arriba
+   y abajo-. Se centran los dos con flexbox dentro de la misma fila. */
+@media (max-width: 767px) {
+	.navbar-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		height: auto;
+		padding: 16px 15px;
+	}
+
+	.navbar .navbar-brand {
+		display: flex;
+		align-items: center;
+		height: auto;
+		margin: 0;
+		padding: 0;
+		order: 1;
+	}
+
+	.navbar .navbar-brand img {
+		margin: 0;
+		max-height: 36px;
+		max-width: 60vw;
+		width: auto;
+	}
+
+	.navbar-toggle {
+		margin: 0;
+		order: 2;
+	}
+}
+
+/* Reproductor del streaming en vivo (js/radio-player.js)
+   Se pisa por completo el layout de ".player-content" de Muziq (flotantes
+   + posiciones absolutas calculadas a mano para su propio scrubber, que
+   no usamos) por una fila flex simple, así todo queda centrado
+   verticalmente sin pelear con offsets en píxeles. Color de acento: verde
+   de la marca (el mismo que usa el resto del sitio, --color-marca). */
+:root {
+	--color-marca: #519a0a;
+}
+
+/* Muziq solo define una altura fija para la barra del reproductor en
+   desktop ("@media (min-width:768px) { .player.horizontal { height:100px }
+   }"). Sin eso en mobile, ".container" y ".player-content" (ambos con
+   "height:100%") no tienen de qué heredar, así que el centrado vertical
+   del botón de play no tiene efecto real -termina pegado arriba, con el
+   alto de la barra puesto por el bloque de logo+texto en vez de por un
+   valor explícito. Se usa el mismo 150px que ya reserva "footer.footer"
+   para esta barra en mobile, así quedan consistentes. */
+@media (max-width: 767px) {
+	.player.horizontal {
+		height: 150px;
+	}
+}
+
+.player.horizontal .player-content {
+	display: flex;
+	align-items: center;
+	gap: 24px;
+	height: 100%;
+	padding: 0 20px;
+}
+
+@media (min-width: 768px) {
+	.player.horizontal .player-content {
+		/* sigue flotando al lado de .info-album-player (que también
+		   flota), como en el original de Muziq -solo se pisa el
+		   contenido interno con flexbox */
+		width: calc(100% - 235px);
+		float: left;
+	}
+}
+
+/* Portada del reproductor (favicon-196x196.png): el "21" es negro sobre
+   fondo transparente, y se fundía con el fondo casi negro del reproductor
+   (#151518) -quedaba ilegible, solo se veía el arco verde. Se le da una
+   placa blanca detrás para que el ícono tenga contraste. */
+.player.horizontal .info-album-player .album-cover {
+	background-color: #ffffff;
+}
+
+/* Botón play/pause: en vez de pelear con el sprite de audiojs
+   (players-intro.png, calibrado en pixeles para su propio markup), se
+   usan íconos de Font Awesome centrados con flexbox, y el verde de la
+   marca en vez del rojo por defecto de Muziq. */
+.player.horizontal .audiojs {
+	position: static;
+	top: auto;
+	margin-left: 0;
+	width: auto;
+	flex-shrink: 0;
+}
+
+.player.horizontal .audiojs .play-pause {
+	position: static;
+	top: auto;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 56px;
+	height: 56px;
+	background: var(--color-marca);
+}
+
+.player.horizontal .audiojs .play-pause p {
+	display: none;
+	background: none;
+	width: auto;
+	height: auto;
+	margin: 0;
+	line-height: 1;
+}
+
+.player.horizontal .audiojs .play-pause .play,
+.player.horizontal .audiojs .play-pause .pause,
+.player.horizontal .audiojs .play-pause .loading {
+	color: #ffffff;
+	font-size: 22px;
+}
+
+.player.horizontal .audiojs .play-pause .play {
+	display: block;
+	/* el triángulo de "play" pesa un poco más a la izquierda a simple
+	   vista si no se lo empuja; esto lo centra ópticamente */
+	margin-left: 3px;
+}
+
+.player.horizontal .audiojs.playing .play-pause .play,
+.player.horizontal .audiojs.loading .play-pause .play,
+.player.horizontal .audiojs.error .play-pause .play {
+	display: none;
+}
+
+.player.horizontal .audiojs.playing .play-pause .pause {
+	display: block;
+}
+
+.player.horizontal .audiojs.loading .play-pause .loading {
+	display: block;
+}
+
+.player.horizontal .audiojs.error .play-pause {
+	opacity: 0.6;
+}
+
+/* Mobile: volumen y selector de calidad quedan ocultos (ver media queries
+   más abajo), así que el botón de play/pause es el único control visible
+   en ".player-content" -sin esto, queda pegado a la izquierda contra el
+   divisor de ".info-album-player" con todo el espacio sobrante vacío a
+   la derecha. Se centra dentro de su propio contenedor, no de la barra
+   completa. */
+@media (max-width: 767px) {
+	.player.horizontal .player-content {
+		justify-content: center;
+	}
+}
+
+/* Control de volumen */
+.player.horizontal .player-volume {
+	display: none;
+}
+
+@media (min-width: 768px) {
+	.player.horizontal .player-volume {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		color: #ffffff;
+		flex-shrink: 0;
+	}
+
+	.player.horizontal .player-volume .fa-volume-up,
+	.player.horizontal .player-volume .fa-volume-off {
+		font-size: 18px;
+		width: 18px;
+		text-align: center;
+		opacity: 0.9;
+	}
+
+	.player.horizontal .player-volume .volume-slider {
+		-webkit-appearance: none;
+		appearance: none;
+		width: 130px;
+		height: 5px;
+		background: #3a3a3a;
+		border-radius: 3px;
+		outline: none;
+		cursor: pointer;
+	}
+
+	.player.horizontal .player-volume .volume-slider::-webkit-slider-thumb {
+		-webkit-appearance: none;
+		appearance: none;
+		width: 16px;
+		height: 16px;
+		border-radius: 50%;
+		background: #ffffff;
+		border: 3px solid var(--color-marca);
+	}
+
+	.player.horizontal .player-volume .volume-slider::-moz-range-thumb {
+		width: 16px;
+		height: 16px;
+		border: 3px solid var(--color-marca);
+		border-radius: 50%;
+		background: #ffffff;
+	}
+
+	.player.horizontal .player-volume .volume-slider::-moz-range-progress {
+		background: var(--color-marca);
+		height: 5px;
+		border-radius: 3px;
+	}
+}
+
+/* Selector de calidad: toggle estilo iOS (Normal / Alta) en vez de un
+   botón, que además reconecta el stream que ya está sonando. */
+.player.horizontal .stream-quality {
+	display: none;
+}
+
+@media (min-width: 992px) {
+	.player.horizontal .stream-quality {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		flex-shrink: 0;
+		margin-left: auto;
+	}
+
+	.player.horizontal .stream-quality .quality-label {
+		color: #ffffff;
+		font-size: 11px;
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.5px;
+		opacity: 0.5;
+		transition: opacity 0.2s ease-in-out;
+	}
+
+	/* Resaltar la etiqueta del lado activo, como en los ajustes de iOS */
+	.player.horizontal .stream-quality:has(.quality-toggle:not(:checked)) .quality-label[data-quality-label="0"],
+	.player.horizontal .stream-quality:has(.quality-toggle:checked) .quality-label[data-quality-label="1"] {
+		opacity: 1;
+	}
+
+	.player.horizontal .ios-toggle {
+		position: relative;
+		display: inline-block;
+		width: 42px;
+		height: 24px;
+		margin: 0;
+		cursor: pointer;
+	}
+
+	.player.horizontal .ios-toggle .quality-toggle {
+		position: absolute;
+		opacity: 0;
+		width: 100%;
+		height: 100%;
+		margin: 0;
+		cursor: pointer;
+	}
+
+	.player.horizontal .ios-toggle-slider {
+		position: absolute;
+		inset: 0;
+		background-color: #3a3a3a;
+		border-radius: 24px;
+		transition: background-color 0.2s ease-in-out;
+	}
+
+	.player.horizontal .ios-toggle-slider::before {
+		content: '';
+		position: absolute;
+		top: 2px;
+		left: 2px;
+		width: 20px;
+		height: 20px;
+		background-color: #ffffff;
+		border-radius: 50%;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+		transition: transform 0.2s ease-in-out;
+	}
+
+	.player.horizontal .quality-toggle:checked + .ios-toggle-slider {
+		background-color: var(--color-marca);
+	}
+
+	.player.horizontal .quality-toggle:checked + .ios-toggle-slider::before {
+		transform: translateX(18px);
+	}
+
+	.player.horizontal .quality-toggle:focus-visible + .ios-toggle-slider {
+		box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.4);
+	}
+}
+
+/* Dejar lugar para la barra fija del reproductor.
+   No se usa "body { padding-bottom }" porque Muziq define
+   "html, body { height: 100% }", lo que hace que el padding del body
+   no reserve espacio real en el documento. Se aplica directo al footer,
+   que es el último elemento en el flujo normal. */
+footer.footer {
+	padding-top: 72px;
+	padding-left: 24px;
+	padding-right: 24px;
+	padding-bottom: 120px;
+}
+
+@media (max-width: 767px) {
+	footer.footer {
+		padding-top: 48px;
+		padding-left: 20px;
+		padding-right: 20px;
+		padding-bottom: 150px;
+	}
+}
+
+/* Footer: el "footer{}" de Muziq (main.css) está pensado para una línea
+   corta de copyright + un menú al costado, no para el párrafo largo que
+   tenemos acá -por eso quedaba todo en mayúsculas, pegado al borde y
+   difícil de leer. Espaciado revisado (DESIGN.md, dirección "centered
+   airy"): más aire entre logo/copy/crédito y un divisor sutil entre el
+   copyright y el crédito, para que cada línea se lea como su propio
+   bloque en vez de amontonarse. */
+footer.footer .footer-content {
+	text-align: center;
+	max-width: 720px;
+	margin: 0 auto;
+}
+
+footer.footer .footer-logo {
+	max-width: 130px;
+	margin-bottom: 28px;
+	opacity: 0.9;
+}
+
+footer.footer .footer-copy {
+	text-transform: none;
+	font-size: 14px;
+	line-height: 1.7;
+	letter-spacing: normal;
+	margin-bottom: 20px;
+}
+
+footer.footer .footer-legal {
+	text-transform: none;
+	font-size: 12px;
+	line-height: 1.6;
+	letter-spacing: normal;
+	opacity: 0.65;
+	margin-bottom: 20px;
+}
+
+footer.footer .footer-divider {
+	width: 40px;
+	height: 1px;
+	margin: 0 auto 16px;
+	background-color: rgba(255, 255, 255, 0.35);
+}
+
+footer.footer .footer-credit {
+	text-transform: none;
+	font-size: 12px;
+	letter-spacing: normal;
+	opacity: 0.75;
+	margin-bottom: 0;
+}
+
+footer.footer .footer-credit a {
+	color: #ffffff;
+	text-decoration: underline;
+}
+
+/* Anillo de foco visible sobre el fondo verde -mismo patrón que el toggle
+   de calidad del reproductor- porque el outline default del navegador
+   puede perderse contra un fondo de color sólido. */
+footer.footer .footer-credit a:focus-visible {
+	outline: none;
+	box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.4);
+	border-radius: 2px;
+}
+
+@media (max-width: 767px) {
+	footer.footer .footer-logo {
+		margin-bottom: 22px;
+	}
+
+	footer.footer .footer-copy {
+		font-size: 13px;
+		margin-bottom: 16px;
+	}
+
+	footer.footer .footer-legal {
+		font-size: 11px;
+		margin-bottom: 16px;
+	}
+}
+
+/* Espacio entre #jHeader (absolute, flota transparente sobre el hero del
+   Twitch en el home) y el ícono de Twitch de la sección anchor00. En
+   mobile el header es más bajo (~100px, sin el menú desplegado), así que
+   necesita bastante menos aire que en desktop (~107px + margen). */
+.hero-top-spacer {
+	margin-bottom: 60px;
+}
+
+@media (min-width: 768px) {
+	.hero-top-spacer {
+		margin-bottom: 150px;
+	}
+}
+
+/* Sección "Redes sociales" (reutiliza .twitterfeed por el fondo parallax) */
+
+/* Oscurecer la imagen de fondo para que el texto tenga contraste */
+.social-section {
+	position: relative;
+}
+
+.social-section::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0, 0, 0, 0.6);
+	z-index: 1;
+}
+
+.social-section .container {
+	position: relative;
+	z-index: 2;
+}
+
+/* section.twitterfeed i.fa (main.css) fuerza display:block y font-size:55px
+   pensado para un único ícono decorativo grande. Los íconos de los botones
+   de esta sección necesitan quedar como íconos en línea normales. */
+.social-section .btn i.fa {
+	display: inline;
+	font-size: 16px;
+	margin-bottom: 0;
+	margin-right: 6px;
+	vertical-align: middle;
+}
+
+/* #jHeader es "position: absolute" y transparente por diseño: en el home
+   flota sobre el hero oscuro del Twitch. En el resto de las páginas no hay
+   hero detrás, así que el texto blanco queda invisible sobre fondo claro.
+   #jHeader.solid le da fondo sólido y flujo normal (empuja el contenido
+   en vez de superponerse). */
+#jHeader.solid {
+	position: relative;
+	background-color: #151518;
+}
+
+/* Botones para compartir en el single de noticias (single.php).
+   No usamos el gutter de .row/.col-* de bootstrap porque acá no se
+   estaba aplicando y los botones quedaban pegados unos con otros. */
+.channels_list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px;
+	padding: 0;
+	margin: 0;
+}
+
+.channels_list li {
+	width: auto;
+	padding: 0;
+}
+
+/* .btn.rounded trae un padding horizontal pensado para textos cortos
+   ("Enviar"). Con textos más largos ("Compartila en Facebook") los tres
+   botones no entraban en una sola línea. */
+.channels_list .btn {
+	padding: 13px 22px 10px 22px;
+	font-size: 13px;
+}
+
+@media (min-width: 768px) {
+	.channels_list {
+		flex-wrap: nowrap;
+	}
+}
+
+#jHeader.solid .navbar-default .navbar-toggle .icon-bar {
+	background-color: #ffffff;
+}
+
+.social-section .btn {
+	margin: 0 6px 12px;
+}
+
+/* Programas: la tarjeta de Muziq usa una altura fija (500-600px) pensada
+   para las miniaturas cuadradas registradas ("listados-thumbnail",
+   450x450). Si alguna imagen no tiene ese tamaño generado, WordPress cae
+   en otra proporción (por ej. retrato) que es más alta y desborda la
+   tarjeta -el texto queda tapado por los puntos del carrusel-. Se fuerza
+   una caja de imagen de altura fija con object-fit, y la tarjeta crece
+   según su contenido real en vez de recortarlo. */
+.carousel-discography .gallery-cell {
+	height: auto;
+	padding-bottom: 50px;
+}
+
+.carousel-discography .gallery-cell .cover {
+	height: 280px;
+	overflow: hidden;
+	background-color: #111111;
+}
+
+/* object-fit:cover recortaba la foto para llenar la caja -bien mientras
+   las fotos eran cuadradas (450x450), pero las fotos nuevas de los
+   programas son retrato (ej. 800x1200) y quedaban con cabezas cortadas.
+   Con "contain" se ve la foto completa, con el fondo oscuro de la caja
+   rellenando a los costados en vez de recortar. */
+.carousel-discography .gallery-cell .cover img {
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+}
+
+@media (min-width: 1200px) {
+	.carousel-discography .gallery-cell .cover {
+		height: 320px;
+	}
+}
+
+/* Conductores: las fotos se suben con "add_image_size(..., false)" -sin
+   recorte- asi que cada una tiene su propio aspect ratio y la tarjeta
+   terminaba con una altura distinta por conductor. Mismo patron que
+   .carousel-discography de arriba: se fija la altura de la caja y se
+   recorta la imagen por CSS (object-fit: cover) en vez de depender del
+   archivo subido, así todas las tarjetas quedan del mismo tamaño. */
+.featured-artists .featured-artist .image {
+	height: 366px;
+	overflow: hidden;
+}
+
+.featured-artists .featured-artist .image img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: top center;
+}
+
+@media (min-width: 768px) {
+	.featured-artists .featured-artist .image {
+		height: 420px;
+	}
+}
+
+@media (min-width: 992px) {
+	.featured-artists .featured-artist .image {
+		height: 360px;
+	}
+}
+
+@media (min-width: 1600px) {
+	.featured-artists .featured-artist .image {
+		height: 500px;
+	}
+}
